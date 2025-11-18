@@ -7,12 +7,14 @@ public class StudentGUI extends JFrame
     private JTextField idField, nameField, marksField;
     private JTextArea displayArea;
     private JComboBox<String> studentDropdown, subjectDropdown;
-    private int subID[] = {1, 2, 3, 4, 5};
+    private int subID[] = {1, 2, 3, 4, 5, 6, 255};
     private String subs[] = {"Physics",
                              "Chemistry",
                              "Maths",
                              "Computer",
-                             "Biology"};
+                             "Biology",
+                             "Malayalam",
+                             "Attendance"};
 
     public StudentGUI()
     {
@@ -210,36 +212,19 @@ public class StudentGUI extends JFrame
         {
             JOptionPane.showMessageDialog(this, "Please enter valid marks");
         }
-        viewAllStudents();
+        displaySelectedStudent(manager.getStudent(id));
     }
 
     private void viewAllStudents()
     {
-        displayArea.setText("UID:\tName:\t\t");
-        for (String s : subs)
-            displayArea.append(s + "\t");
-        displayArea.append("\n");
+        displayArea.setText("UID:\tName:\t\tTotal%:\tTotal Marks:\n");
         for (Student student : manager.getAllStudents())
         {
-            displayArea.append(student.getUID() + "\t" +
-                               student.getName() + "\t\t");
-            for (int subject : subID)
-            {
-                boolean in = false;
-                for (int i : student.getSubjects())
-                {
-                    if (i == subject)
-                    {
-                        displayArea.append(student.getMark(i) + "");
-                        in = true;
-                        break;
-                    }
-                }
-                if (!in)
-                    displayArea.append(" - ");
-                displayArea.append("\t");
-            }
-            displayArea.append("\n");
+            displayArea.append(student.getUID() + "\t" + student.getName() + "\t\t");
+            double total = student.getTotalMarks();
+            int c = student.getSubCount();
+            double percentile = total / c;
+            displayArea.append(percentile + "\t" + total + "\t/" + (int)(100 * c) + "\n");
         }
     }
 
@@ -261,12 +246,12 @@ public class StudentGUI extends JFrame
 
     private void displaySelectedStudent(Student student)
     {
-        displayArea.setText("UID: " + student.getUID() + "\tName: " + student.getName() + "\n");
+        displayArea.setText("UID:    " + student.getUID() + "\tName:    " + student.getName() + "\n");
         displayArea.append("Marks:\n");
         for (int subject : student.getSubjects())
-        {
             displayArea.append("    " + subs[subject - 1] + "\t:    " + student.getMark(subject) + "\n");
-        }
+        displayArea.append("Total%:     " + (student.getTotalMarks() / student.getSubCount()) + "\n");
+        displayArea.append("Total:     " + student.getTotalMarks() + " /" + (100 * student.getSubCount()) + "\n");
     }
 
     private void clearFields()

@@ -3,6 +3,7 @@ class Student
 {
     private String uid;
     private String name;
+    private double total;
     private HashMap<Integer, Double> marks;
 
     public Student(String uid, String name)
@@ -24,7 +25,21 @@ class Student
 
     void addMark(int subjectID, double mark)
     {
-        marks.put(subjectID,mark);
+        if (marks.containsKey(subjectID))
+            // remove previous mark to update
+            total -= getMark(subjectID);
+        total += mark;
+        marks.put(subjectID, mark);
+    }
+
+    double getTotalMarks()
+    {
+        return total;
+    }
+
+    int getSubCount()
+    {
+        return marks.size();
     }
 
     Double getMark(int subjectID)
